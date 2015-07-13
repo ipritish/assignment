@@ -65,6 +65,7 @@ void *thread_function_a(void *arg)
     while(strncmp("end", work_area, 3) != 0) 
     {
         printf("You input %d characters\n", strlen(work_area) -1);
+        sleep(1);
         sem_wait(&bin_sem);
     }
     pthread_exit(NULL);
@@ -76,6 +77,7 @@ void *thread_function_b(void *arg)
     while(strncmp("end", work_area, 3) != 0)
     {
         printf("Your first char %c : \n", work_area[0]);
+        sleep(1);
         sem_wait(&bin_sem);
     }
     pthread_exit(NULL);
@@ -87,6 +89,7 @@ void *thread_function_c(void *arg)
     while(strncmp("end", work_area, 3) != 0)
     {
         printf("You input contain %c character\n", work_area[0]);
+        sleep(1);
         sem_wait(&bin_sem);
     }
     pthread_exit(NULL);
