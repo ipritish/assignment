@@ -10,6 +10,9 @@ int thread_finished = 0;
 int main() 
 {
     int res;
+    int max_priority;
+    int min_priority;
+    struct sched_param scheduling_value;
     pthread_t a_thread;
     pthread_attr_t thread_attr;
     res = pthread_attr_init(&thread_attr);
@@ -18,12 +21,33 @@ int main()
         perror("Attribute creation failed");
         exit(EXIT_FAILURE);
     }
+
     res = pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
     if (res != 0) 
     {
         perror("Setting detached attribute failed");
         exit(EXIT_FAILURE);
     }
+
+    res = pthread_attr_setschedpolicy(&thread_attr, SCHED_OTHER);
+    if (res != 0) 
+    {
+        perror("Setting scheduling policy failed");
+        exit(EXIT_FAILURE);
+    }
+
+    max_priority = sched_get_priority_max(SCHED_OTHER);
+    min_priority = sched_get_priority_min(SCHED_OTHER);
+
+    scheduling_value.sched_priority = min_priority;
+
+    res = pthread_attr_setschedparam(&thread_attr, &scheduling_value);
+    if (res != 0) 
+    {
+        perror("Setting scheduling priority failed");
+        exit(EXIT_FAILURE);
+    }
+
     res = pthread_create(&a_thread, &thread_attr,thread_function, (void *)message);
     if (res != 0) 
     {
