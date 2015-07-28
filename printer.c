@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 
 int main (int argc, char *argv[])
 {
@@ -7,6 +8,8 @@ int main (int argc, char *argv[])
     {
         printf("Passed value is %s\n",argv[1]);
     }
+//    printf("Integer is %d\n",argc);
+    fflush(stdout);
 
     return 0;
 

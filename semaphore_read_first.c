@@ -17,14 +17,14 @@ union semun
     struct seminfo  *__buf;  /* Buffer for IPC_INFO(Linux-specific) */
 };
 
-int main (int argc, char *argv[])
+int main ()
 {
     int i;
     int pause_time;
+    int status;
     char op_char = 'O';
     srand((unsigned int)getpid());
     sem_id = semget((key_t)1234, 1, 0666 | IPC_CREAT);
-    
     
     if (!set_semvalue()) 
     {
@@ -34,16 +34,29 @@ int main (int argc, char *argv[])
     //op_char = 'X';
     //sleep(2);
     
-
+    char *argc[] = {"./printer","Process_Read_first",NULL};
     for(i = 0; i < 10; i++) 
     {
         if (!semaphore_p())     
             exit(EXIT_FAILURE);
-        printf("%c", op_char);
-        fflush(stdout);
-        pause_time = rand() % 3;
-        sleep(pause_time);
-        printf("%c", op_char);
+        pid_t pid = fork();
+        if(pid == (pid_t)0)
+        {
+            execv("./printer",argc);
+        }
+        //fflush(stdout);
+        //pause_time = rand() % 3;
+        sleep(1);
+        //printf("%c", op_char);
+        //fflush(stdout);
+        pid_t pid_second = fork();
+        if(pid_second == (pid_t)0)
+        {
+            execv("./printer",argc);
+        }
+        int ret_child = waitpid(pid,&status,0);
+        int ret_s_child = waitpid(pid_second,&status,0);
+        printf("Rading here first\n");
         fflush(stdout);
         if (!semaphore_v()) 
             exit(EXIT_FAILURE);
@@ -52,11 +65,11 @@ int main (int argc, char *argv[])
     }
     
     printf("\n%d - finished\n", getpid());
-    if (argc > 1) 
-    {
-        sleep(10);
+    //if (argc > 1) 
+    //{
+        sleep(4);
         del_semvalue();
-    }
+    //}
     exit(EXIT_SUCCESS);
 }
 
