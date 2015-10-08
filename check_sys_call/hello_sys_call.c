@@ -8,6 +8,7 @@
 int main()
 {
 	long int a = 45;
+	printf("original value%ld\n",a);
 	a = syscall(__NR_sys_hello);
 	printf("system call returned %ld\n",a);
 	return 0;
